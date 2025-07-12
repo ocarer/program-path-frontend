@@ -1,11 +1,15 @@
-<script setup>
-import { ref, onMounted } from 'vue';
+<template>
+  <div>
+    <h1>{{ props.msg }}</h1> <p>Backend Message: {{ backendMessage }}</p>
+    <p v-if="errorMessage" style="color: red;">Error: {{ errorMessage }}</p>
+  </div>
+</template>
 
-defineProps({
-  msg: {
-    type: String,
-    required: true
-  }
+<script setup>
+import { ref, onMounted, defineProps } from 'vue'; // defineProps는 script setup에서 import할 필요 없음.
+
+const props = defineProps({
+  msg: String
 });
 
 const backendMessage = ref('Loading message from backend...');
@@ -13,8 +17,8 @@ const errorMessage = ref('');
 
 onMounted(async () => {
   try {
-    // !!! 여기에 Render에서 복사한 당신의 실제 Node.js 백엔드 URL을 붙여넣으세요 !!!
-    const backendUrl = 'https://program-path-backend-nodejs.onrender.com/';
+    // !!! 로컬에서 실행 중인 Node.js 백엔드의 URL로 변경합니다 !!!
+    const backendUrl = 'http://localhost:3000/'; // Node.js 백엔드가 3000번 포트에서 실행된다고 가정
 
     const response = await fetch(backendUrl);
 
