@@ -1,58 +1,75 @@
+<script setup>
+import { ref, onMounted } from 'vue'; // ref와 onMounted 훅 임포트
+
+defineProps({
+  msg: {
+    type: String,
+    required: true
+  }
+});
+
+// 새로운 상태 변수 선언
+const backendMessage = ref('Loading message from backend...');
+const errorMessage = ref('');
+
+// 컴포넌트가 마운트될 때 API 호출
+onMounted(async () => {
+  try {
+    // 여기에 Node.js 백엔드의 URL을 입력하세요!
+    // 예: const response = await fetch('https://my-program-path-backend-nodejs.onrender.com/');
+    const backendUrl = 'https://program-path-backend-nodejs.onrender.com/'; // !!! 여기에 당신의 실제 백엔드 URL을 붙여넣으세요 !!!
+
+    const response = await fetch(backendUrl);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const text = await response.text(); // 텍스트로 응답 받기
+    backendMessage.value = text;
+  } catch (error) {
+    console.error('Failed to fetch from backend:', error);
+    errorMessage.value = `Error fetching from backend: ${error.message}`;
+    backendMessage.value = 'Failed to load message from backend.';
+  }
+});
+</script>
+
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div class="greetings">
+    <h1 class="green">{{ msg }}</h1>
+    <h3>
+      You’ve successfully created a project with
+      <a href="https://vitejs.dev/" target="_blank" rel="noopener">Vite</a> +
+      <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>.
+    </h3>
+    <hr>
+    <h2>Message from Node.js Backend:</h2>
+    <p v-if="backendMessage">{{ backendMessage }}</p>
+    <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
-</script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+h1 {
+  font-weight: 500;
+  font-size: 2.6rem;
+  position: relative;
+  top: -10px;
+}
+
 h3 {
-  margin: 40px 0 0;
+  font-size: 1.2rem;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+.greetings h1,
+.greetings h3 {
+  text-align: center;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+
+@media (min-width: 1024px) {
+  .greetings h1,
+  .greetings h3 {
+    text-align: left;
+  }
 }
 </style>
